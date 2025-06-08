@@ -109,15 +109,16 @@ if "questions" in st.session_state:
 
     if st.button("Analyser mes réponses"):
         counts = Counter(responses)
-        prompt_eval = f'''
-Tu es un expert DISC. Voici les réponses codées d'un utilisateur à un questionnaire DISC : {dict(counts)}
-
-1. Indique le nombre de réponses pour chaque style DISC (D, I, S, C).
-2. Déduis la couleur dominante.
-3. Donne la couleur secondaire si elle existe.
-4. Rédige un profil synthétique (200-300 mots).
-5. Fournis 3 conseils personnalisés selon ce profil.
-'''
+        prompt_eval = f'''Voici les résultats du questionnaire DISC (nombre de réponses) : D = {D}, I = {I}, S = {S}, C = {C}. Analyse ces résultats et fournis une synthèse structurée selon les consignes suivantes :
+Identifie le style dominant (celui qui a le plus grand nombre de réponses).
+Identifie un style secondaire uniquement si son nombre de réponses représente au moins 25 % du total des réponses.
+Rédige la synthèse en français, de manière claire et directe, en respectant la structure suivante (utilise ces titres exacts en les mettant en gras) :
+Résultats chiffrés : indique le nombre de réponses pour chaque style (D, I, S, C).
+Style dominant : rédige une phrase claire identifiant le style principal.
+Style secondaire : rédige une phrase précisant le style secondaire si le seuil de 25 % est atteint, ou indique qu’aucun style secondaire significatif n’est détecté.
+Profil comportemental : rédige un texte de 200 à 300 mots qui décrit le profil de la personne en se basant exclusivement sur les styles identifiés (dominant et secondaire uniquement).
+Conseils personnalisés : fournis 3 recommandations concrètes, spécifiquement adaptées aux traits du style dominant (et du style secondaire si présent).
+Important : ne décris jamais de styles qui n’ont pas été détectés dans les résultats. La synthèse doit rester strictement cohérente avec les données fournies.'''
         with st.spinner("Analyse..."):
             result = client.chat.completions.create(
                 model=model,
