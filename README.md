@@ -7,10 +7,11 @@ Cette application permet de générer un **questionnaire DISC personnalisé** et
 ## ✅ Fonctionnalités
 
 - Génération dynamique de 10 à 28 questions DISC
-- Formulation neutre, sans biais de position
+- Ordre des réponses totalement aléatoire à chaque question
+- Réponses **sans lettres visibles (A/B/C/D)** pour éviter le biais
 - Analyse automatique par IA (profil dominant, secondaire, synthèse)
-- Estimation du coût API selon le modèle utilisé
-- Interface web déployable gratuitement via Streamlit Cloud
+- Estimation du coût API selon le modèle sélectionné
+- Interface web prête à déployer via Streamlit Cloud
 
 ---
 
@@ -33,13 +34,16 @@ Cette application permet de générer un **questionnaire DISC personnalisé** et
    - Le **nombre de questions**
    - Le **modèle GPT** (`gpt-3.5-turbo` ou `gpt-4-turbo`)
 
-2. Il génère le **questionnaire DISC** et répond à chaque question dans l’interface.
+2. Il génère un **questionnaire DISC aléatoire** :
+   - Chaque réponse est affichée sans lettre visible.
+   - Les styles DISC (D/I/S/C) sont cachés via un marquage `::X`.
 
-3. Il obtient :
-   - Une **répartition des réponses** par profil
-   - Une **couleur dominante et secondaire**
-   - Une **synthèse comportementale personnalisée**
-   - Des **recommandations ciblées**
+3. L’utilisateur répond sans savoir à quel type chaque réponse correspond.
+
+4. À la fin, l'application :
+   - Compte les styles choisis,
+   - Détermine le profil DISC (dominant + secondaire),
+   - Génère une synthèse descriptive + conseils.
 
 ---
 
@@ -47,19 +51,18 @@ Cette application permet de générer un **questionnaire DISC personnalisé** et
 
 | Modèle         | Coût estimé par test complet | Tokens estimés          | Remarques              |
 |----------------|------------------------------|--------------------------|-------------------------|
-| gpt-3.5-turbo  | ~0.0075 $                    | ~1 500 in / 4 000 out    | Rapide, économique      |
-| gpt-4-turbo    | ~0.1350 $                    | ~1 500 in / 4 000 out    | Analyse plus détaillée  |
+| gpt-3.5-turbo  | ~0.0075 $                    | ~1 500 in / 4 000 out    | Économique, rapide      |
+| gpt-4-turbo    | ~0.1350 $                    | ~1 500 in / 4 000 out    | Meilleure qualité       |
 
-> 💡 L’estimation du coût est affichée dynamiquement dans l’interface avant chaque génération.
+> 💡 L’estimation est affichée automatiquement dans l’interface avant génération.
 
 ---
 
 ## 🛡️ Respect de la vie privée
 
-- Aucune donnée personnelle n’est stockée.
-- Les réponses sont temporairement envoyées à l’API OpenAI pour traitement.
-- Aucun cookie, tracking ou base de données.
-- L’interface fonctionne uniquement côté client + API.
+- Aucune donnée personnelle n’est enregistrée.
+- Les réponses sont traitées uniquement côté client, puis via l’API OpenAI.
+- Aucune base de données, aucun cookie, aucune traçabilité.
 
 ---
 
@@ -79,7 +82,6 @@ Cette application permet de générer un **questionnaire DISC personnalisé** et
 OPENAI_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
-
 6. Clique sur **Deploy**.
 
 ---
@@ -88,31 +90,32 @@ OPENAI_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxx"
 
 <details>
 <summary>📁 Structure du projet</summary>
-```
+
 disc-gpt-app/
 ├── app.py ← Interface principale Streamlit
 ├── requirements.txt ← Dépendances Python (Streamlit + OpenAI)
 ├── README.md ← Documentation du projet
 └── .streamlit/
 └── config.toml ← (optionnel) Configuration visuelle Streamlit (thème, layout, etc.)
-```
+
+
 </details>
 
 ---
 
 ## ❓ FAQ
 
-**Est-ce que GPT-3.5 suffit pour ce type d’analyse ?**  
-Oui. GPT-3.5 fournit des résultats corrects et économiques. GPT-4 est recommandé pour une synthèse plus fluide.
+**Pourquoi les lettres A/B/C/D ont été supprimées ?**  
+Pour éviter que l’utilisateur repère les styles DISC à travers la position ou répétition. L’ordre est désormais mélangé et invisible.
 
-**Puis-je utiliser cette app sans carte bancaire ?**  
-Non. OpenAI exige un premier paiement ou une carte enregistrée, même pour utiliser les modèles les moins chers.
+**Est-ce que GPT-3.5 suffit ?**  
+Oui, il fonctionne bien pour l’analyse. GPT-4 est recommandé si tu veux des textes plus nuancés.
 
-**Puis-je déployer l’app ailleurs ?**  
-Oui. Elle fonctionne aussi localement (`streamlit run app.py`), sur un serveur personnel ou en conteneur Docker.
+**Puis-je utiliser ce projet sans carte bancaire ?**  
+Non. OpenAI exige un paiement minimal ou une carte enregistrée pour débloquer l’accès API.
 
-**Le projet stocke-t-il des données utilisateurs ?**  
-Non. Toutes les interactions sont jetables. Les données sont uniquement envoyées à l’API, puis perdues.
+**Puis-je utiliser cette app hors ligne ?**  
+Non. L’analyse dépend de l’appel API à OpenAI. Tu peux l’héberger localement, mais l’API reste nécessaire.
 
 ---
 
@@ -120,13 +123,11 @@ Non. Toutes les interactions sont jetables. Les données sont uniquement envoyé
 
 Ce projet a été conçu pour :
 
-- démocratiser l’accès au modèle DISC via IA,
-- automatiser les évaluations comportementales,
-- proposer une interface simple, 100% sans base de données.
+- automatiser la création et l'analyse de tests DISC,
+- garantir une neutralité dans les réponses,
+- proposer une interface simple, sans base de données.
 
-**Technologies utilisées** :
-- Python 3
-- Streamlit
-- OpenAI API (`gpt-3.5-turbo`, `gpt-4-turbo`)
+**Technos** : Python · Streamlit · OpenAI API
 
-> Projet librement réutilisable à but pédagogique, RH ou personnel.
+> Libre d'utilisation pour usage personnel, professionnel ou pédagogique.
+
