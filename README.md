@@ -25,6 +25,32 @@ Cette application permet de générer un **questionnaire DISC personnalisé** et
 
 ---
 
+## ⚙️ Options de configuration
+
+### 🎯 Contexte
+
+Le contexte sélectionné influence la formulation des questions DISC.
+
+| Contexte      | Description                                                                 |
+|---------------|-----------------------------------------------------------------------------|
+| **Professionnel** | Questions orientées vers les situations de travail, gestion, performance |
+| **Personnel**     | Questions centrées sur les préférences et comportements individuels       |
+| **Équipe**        | Questions axées sur la collaboration, le collectif et les dynamiques de groupe |
+
+---
+
+### ✏️ Niveau de langage
+
+Le niveau de langage adapte la complexité du vocabulaire utilisé.
+
+| Niveau             | Description                                                              |
+|--------------------|--------------------------------------------------------------------------|
+| **Grand public**   | Formulation simple, accessible à tous, sans jargon                       |
+| **Étudiant**       | Ton neutre, explicite, avec un vocabulaire courant mais structuré        |
+| **Manager**        | Style plus formel, professionnel, adapté à un public encadrant ou cadre  |
+
+---
+
 ## 💡 Exemple d'utilisation
 
 1. L'utilisateur choisit :
