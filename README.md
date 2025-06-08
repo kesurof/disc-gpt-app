@@ -1,17 +1,27 @@
 # 🧠 Test DISC avec GPT (Streamlit + OpenAI)
 
-Cette application permet de générer un **questionnaire DISC personnalisé** et d’analyser automatiquement les réponses pour déterminer le **profil comportemental DISC** d’un utilisateur (Dominance, Influence, Stabilité, Conformité).
+Cette application Streamlit utilise l'API d'OpenAI pour générer des questionnaires DISC aléatoires, analyser les réponses, et proposer une synthèse de votre profil comportemental (Dominance, Influence, Stabilité, Conformité).
 
 ---
 
-## ✅ Fonctionnalités
+## 🔍 Objectif
 
-- Génération dynamique de 10 à 28 questions DISC
-- Ordre des réponses totalement aléatoire à chaque question
-- Réponses **sans lettres visibles (A/B/C/D)** pour éviter le biais
-- Analyse automatique par IA (profil dominant, secondaire, synthèse)
-- Estimation du coût API selon le modèle sélectionné
-- Interface web prête à déployer via Streamlit Cloud
+Le test DISC est un outil de compréhension des comportements humains. Cette application permet de :
+- Générer dynamiquement un questionnaire DISC personnalisé
+- Mémoriser les réponses sans biais (ordre aléatoire)
+- Analyser les tendances de comportement
+- Produire un résumé interprétatif automatique basé sur le modèle DISC
+
+---
+
+## 🚀 Fonctionnalités
+
+- Génération aléatoire de 10 à 28 questions DISC
+- Réponses mélangées automatiquement (anti-biais)
+- Analyse automatisée des styles DISC (D/I/S/C)
+- Synthèse textuelle du profil avec conseils personnalisés
+- Estimation dynamique des coûts API
+- Choix du contexte (pro/perso/équipe) et du niveau de langage
 
 ---
 
@@ -51,63 +61,45 @@ Le niveau de langage adapte la complexité du vocabulaire utilisé.
 
 ---
 
-## 💡 Exemple d'utilisation
+## 🧪 Exemple d'utilisation
 
-1. L'utilisateur choisit :
-   - Le **contexte** (professionnel, personnel…)
-   - La **langue**
-   - Le **niveau de langage**
-   - Le **nombre de questions**
-   - Le **modèle GPT** (`gpt-3.5-turbo` ou `gpt-4-turbo`)
-
-2. Il génère un **questionnaire DISC aléatoire** :
-   - Chaque réponse est affichée sans lettre visible.
-   - Les styles DISC (D/I/S/C) sont cachés via un marquage `::X`.
-
-3. L’utilisateur répond sans savoir à quel type chaque réponse correspond.
-
-4. À la fin, l'application :
-   - Compte les styles choisis,
-   - Détermine le profil DISC (dominant + secondaire),
-   - Génère une synthèse descriptive + conseils.
+1. Sélectionnez le **contexte** : Professionnel, Personnel ou Équipe
+2. Choisissez le **niveau de langage** : Grand public, Étudiant, Manager
+3. Lancez la génération du questionnaire
+4. Répondez aux questions proposées
+5. Cliquez sur **Analyser mes réponses**
+6. Obtenez le résultat DISC avec recommandations
 
 ---
 
 ## 💰 Estimation des coûts API (OpenAI)
 
-L'application fonctionne avec plusieurs modèles OpenAI compatibles avec les fonctions `chat.completions`.
+| Modèle            | Prix (entrée / sortie) | Estimation pour un test | Remarques                         |
+|-------------------|------------------------|--------------------------|-----------------------------------|
+| `gpt-3.5-turbo`   | 0,5 ¢ / 1,5 ¢ par 1K tokens | ~0,0068 $ | Économique, suffisant pour usage standard |
+| `gpt-4o`          | 2,5 ¢ / 10 ¢ par 1K tokens  | ~0,0438 $ |Rapide, économique, haute qualité |
 
-| Modèle             | Coût estimé par test complet | Tarif (approx. input/output)     | Remarques                         |
-|--------------------|------------------------------|-----------------------------------|-----------------------------------|
-| gpt-3.5-turbo      | ~0.0075 $                    | $0.0005 / $0.0015 par 1k tokens   | Économique, suffisant pour usage standard |
-| gpt-4-turbo        | ~0.1350 $                    | $0.01 / $0.03 par 1k tokens       | Meilleure qualité d’analyse       |
-| gpt-4o             | ~0.0450 $                    | $0.005 / $0.015 par 1k tokens     | Rapide, économique, haute qualité |
-| gpt-4.5-preview    | ~0.0900 $                    | Estimé proche de gpt-4-turbo      | À confirmer selon ton plan        |
-
-> Le coût exact dépend du nombre de tokens échangés (texte envoyé + réponse générée).
-> L’estimation est automatiquement affichée dans l’interface selon le modèle sélectionné.
+> Estimation calculée sur une base de ~1500 tokens en entrée et ~4000 en sortie.
 
 ---
 
-### 📐 Méthode de calcul interne
+## 🔐 Respect de la vie privée
 
-- **Tokens estimés** :
-  - ≈ 1 500 pour la génération du questionnaire
-  - ≈ 4 000 pour l’analyse des réponses
-- **Formule appliquée** :
-````
-(input_tokens / 1000) × input_cost + (output_tokens / 1000) × output_cost
-````
-
-Ces valeurs sont utilisées pour afficher une **estimation dynamique** dans l’application avant chaque génération.
+Aucune donnée n’est stockée. Toutes les interactions se font directement entre votre navigateur, Streamlit et l’API OpenAI. Les réponses ne sont ni conservées, ni partagées.
 
 ---
 
-## 🛡️ Respect de la vie privée
+## 🗂 Structure du projet
 
-- Aucune donnée personnelle n’est enregistrée.
-- Les réponses sont traitées uniquement côté client, puis via l’API OpenAI.
-- Aucune base de données, aucun cookie, aucune traçabilité.
+```
+disc-gpt-app/
+├── app.py                     # Script principal Streamlit
+├── .streamlit/
+│   └── config.toml            # Configuration de l'interface
+├── requirements.txt           # Dépendances Python
+├── README.md                  # Documentation du projet
+└── docs/
+```
 
 ---
 
@@ -131,36 +123,22 @@ OPENAI_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxx"
 
 ---
 
-## 📁 Structure du projet
-
-<details>
-<summary>📁 Structure du projet</summary>
-
-disc-gpt-app/
-├── app.py ← Interface principale Streamlit
-├── requirements.txt ← Dépendances Python (Streamlit + OpenAI)
-├── README.md ← Documentation du projet
-└── .streamlit/
-└── config.toml ← (optionnel) Configuration visuelle Streamlit (thème, layout, etc.)
-
-
-</details>
-
----
-
 ## ❓ FAQ
 
-**Pourquoi les lettres A/B/C/D ont été supprimées ?**  
-Pour éviter que l’utilisateur repère les styles DISC à travers la position ou répétition. L’ordre est désormais mélangé et invisible.
+**Q : Est-ce que ce test est scientifiquement validé ?**  
+R : Le modèle DISC est reconnu, mais ce test est généré par IA, donc non validé cliniquement.
 
 **Est-ce que GPT-3.5 suffit ?**  
 Oui, il fonctionne bien pour l’analyse. GPT-4 est recommandé si tu veux des textes plus nuancés.
 
+**Q : Puis-je utiliser cela sans compte OpenAI ?**  
+R : Non. Une clé API personnelle OpenAI est requise.
+
 **Puis-je utiliser ce projet sans carte bancaire ?**  
 Non. OpenAI exige un paiement minimal ou une carte enregistrée pour débloquer l’accès API.
 
-**Puis-je utiliser cette app hors ligne ?**  
-Non. L’analyse dépend de l’appel API à OpenAI. Tu peux l’héberger localement, mais l’API reste nécessaire.
+**Q : Les résultats sont-ils enregistrés ?**  
+R : Non. Tout est temporaire et traité uniquement côté utilisateur.
 
 ---
 
@@ -175,4 +153,3 @@ Ce projet a été conçu pour :
 **Technos** : Python · Streamlit · OpenAI API
 
 > Libre d'utilisation pour usage personnel, professionnel ou pédagogique.
-
