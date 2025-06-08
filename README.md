@@ -73,14 +73,33 @@ Le niveau de langage adapte la complexité du vocabulaire utilisé.
 
 ---
 
-## 💰 Estimations de coût API (OpenAI)
+## 💰 Estimation des coûts API (OpenAI)
 
-| Modèle         | Coût estimé par test complet | Tokens estimés          | Remarques              |
-|----------------|------------------------------|--------------------------|-------------------------|
-| gpt-3.5-turbo  | ~0.0075 $                    | ~1 500 in / 4 000 out    | Économique, rapide      |
-| gpt-4-turbo    | ~0.1350 $                    | ~1 500 in / 4 000 out    | Meilleure qualité       |
+L'application fonctionne avec plusieurs modèles OpenAI compatibles avec les fonctions `chat.completions`.
 
-> 💡 L’estimation est affichée automatiquement dans l’interface avant génération.
+| Modèle             | Coût estimé par test complet | Tarif (approx. input/output)     | Remarques                         |
+|--------------------|------------------------------|-----------------------------------|-----------------------------------|
+| gpt-3.5-turbo      | ~0.0075 $                    | $0.0005 / $0.0015 par 1k tokens   | Économique, suffisant pour usage standard |
+| gpt-4-turbo        | ~0.1350 $                    | $0.01 / $0.03 par 1k tokens       | Meilleure qualité d’analyse       |
+| gpt-4o             | ~0.0450 $                    | $0.005 / $0.015 par 1k tokens     | Rapide, économique, haute qualité |
+| gpt-4.5-preview    | ~0.0900 $                    | Estimé proche de gpt-4-turbo      | À confirmer selon ton plan        |
+
+> Le coût exact dépend du nombre de tokens échangés (texte envoyé + réponse générée).
+> L’estimation est automatiquement affichée dans l’interface selon le modèle sélectionné.
+
+---
+
+### 📐 Méthode de calcul interne
+
+- **Tokens estimés** :
+  - ≈ 1 500 pour la génération du questionnaire
+  - ≈ 4 000 pour l’analyse des réponses
+- **Formule appliquée** :
+````
+(input_tokens / 1000) × input_cost + (output_tokens / 1000) × output_cost
+````
+
+Ces valeurs sont utilisées pour afficher une **estimation dynamique** dans l’application avant chaque génération.
 
 ---
 
