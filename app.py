@@ -19,7 +19,7 @@ def estimer_cout(model, tokens_in, tokens_out):
     return round(cout, 4)
 
 st.set_page_config(page_title="Test DISC", layout="centered")
-st.title("Test DISC – Analyse de profil comportemental")
+st.title("🧠 Test DISC – Analyse de profil comportemental")
 
 context = st.selectbox("Contexte", ["Professionnel", "Personnel", "Équipe"])
 langue = st.selectbox("Langue", ["Français", "Anglais"])
@@ -61,9 +61,12 @@ Fournis uniquement les questions et réponses, sans explication.
         )
     questions_raw = response.choices[0].message.content.strip().split("\n\n")
     st.session_state["questions"] = questions_raw
+    st.session_state["options_melangees"] = {}  # reset ordre mélangé
 
 if "questions" in st.session_state:
-    st.subheader("Répondez au questionnaire")
+    st.subheader("📝 Répondez au questionnaire")
+    if "options_melangees" not in st.session_state:
+        st.session_state["options_melangees"] = {}
     responses = []
 
     for i, bloc in enumerate(st.session_state["questions"]):
@@ -73,7 +76,6 @@ if "questions" in st.session_state:
         question_text = lines[0]
         options_raw = lines[1:5]
 
-        # Extraction des types DISC
         options_cleaned = []
         for opt in options_raw:
             match = re.search(r"(.*)::([DISC])", opt.strip())
@@ -82,12 +84,24 @@ if "questions" in st.session_state:
                 style = match.group(2)
                 options_cleaned.append({"text": label, "style": style})
 
-        # Mélanger les options
-        random.shuffle(options_cleaned)
-        option_labels = [opt["text"] for opt in options_cleaned]
-        selection = st.radio(question_text, option_labels, key=f"q{i}")
+        if f"q{i}" not in st.session_state["options_melangees"]:
+            random.shuffle(options_cleaned)
+            st.session_state["options_melangees"][f"q{i}"] = options_cleaned
+        else:
+            options_cleaned = st.session_state["options_melangees"][f"q{i}"]
 
-        # Retrouver le style associé
+        option_labels = [opt["text"] for opt in options_cleaned]
+
+        st.markdown(f"### ❓ Q{i+1}. {question_text.strip()}")
+        selection = st.radio(
+            label=" ",
+            options=option_labels,
+            index=None,
+            key=f"q{i}",
+            label_visibility="collapsed"
+        )
+        st.markdown("---")
+
         for opt in options_cleaned:
             if opt["text"] == selection:
                 responses.append(opt["style"])
@@ -109,5 +123,5 @@ Tu es un expert DISC. Voici les réponses codées d'un utilisateur à un questio
                 model=model,
                 messages=[{"role": "user", "content": prompt_eval}]
             )
-        st.subheader("Résultat DISC")
+        st.subheader("📊 Résultat DISC")
         st.markdown(result.choices[0].message.content)
