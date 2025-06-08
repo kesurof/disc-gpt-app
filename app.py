@@ -64,7 +64,7 @@ Fournis uniquement les questions et réponses, sans explication.
     st.session_state["options_melangees"] = {}  # reset ordre mélangé
 
 if "questions" in st.session_state:
-    st.subheader("📝 Répondez au questionnaire")
+    st.markdown("## 📝 <strong>Répondez au questionnaire</strong>", unsafe_allow_html=True)
     if "options_melangees" not in st.session_state:
         st.session_state["options_melangees"] = {}
     responses = []
@@ -92,7 +92,7 @@ if "questions" in st.session_state:
 
         option_labels = [opt["text"] for opt in options_cleaned]
 
-        st.markdown(f"### ❓ Q{i+1}. {question_text.strip()}")
+        st.markdown(f"<h4 style=\"margin-bottom: 0.5rem;\">❓ <strong>Question {i+1} :</strong> {question_text.strip()}</h4>", unsafe_allow_html=True)
         selection = st.radio(
             label=" ",
             options=option_labels,
@@ -123,5 +123,5 @@ Tu es un expert DISC. Voici les réponses codées d'un utilisateur à un questio
                 model=model,
                 messages=[{"role": "user", "content": prompt_eval}]
             )
-        st.subheader("📊 Résultat DISC")
+        st.markdown("## 📊 <strong>Résultat DISC</strong>", unsafe_allow_html=True)
         st.markdown(result.choices[0].message.content)
