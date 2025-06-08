@@ -2,9 +2,10 @@ import streamlit as st
 import openai
 import random
 
-st.set_page_config(page_title="Test DISC", layout="centered")
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# Initialisation API
+client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
+st.set_page_config(page_title="Test DISC", layout="centered")
 st.title("Test DISC – Analyse de profil comportemental")
 
 context = st.selectbox("Contexte", ["Professionnel", "Personnel", "Équipe"])
@@ -26,11 +27,12 @@ Q1. Texte de la question
 - D. Réponse
 """
     with st.spinner("Génération en cours..."):
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": prompt_gen}]
         )
-    st.session_state["questions"] = response["choices"][0]["message"]["content"].split("\n\n")
+    questions_raw = response.choices[0].message.content
+    st.session_state["questions"] = questions_raw.split("\n\n")
 
 if "questions" in st.session_state:
     st.subheader("Répondez au questionnaire")
@@ -43,7 +45,7 @@ if "questions" in st.session_state:
         options = lines[1:5]
         random.shuffle(options)
         answer = st.radio(question, options, key=f"q{i}")
-        responses.append(answer[0])  # A/B/C/D
+        responses.append(answer[0])
 
     if st.button("Analyser mes réponses"):
         joined = ", ".join(responses)
@@ -62,9 +64,9 @@ Donne :
 - 3 conseils personnalisés
 """
         with st.spinner("Analyse..."):
-            result = openai.ChatCompletion.create(
+            result = client.chat.completions.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt_eval}]
             )
         st.subheader("Résultat DISC")
-        st.markdown(result["choices"][0]["message"]["content"])
+        st.markdown(result.choices[0].message.content)
