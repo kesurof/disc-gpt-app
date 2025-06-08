@@ -1,11 +1,14 @@
+
 import streamlit as st
 import openai
 import random
+import re
+from collections import Counter
 
 # Initialisation client OpenAI
 client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-# Estimation coût tokens
+# Fonction pour estimer le coût
 def estimer_cout(model, tokens_in, tokens_out):
     prix = {
         "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
@@ -15,7 +18,6 @@ def estimer_cout(model, tokens_in, tokens_out):
     cout = (tokens_in / 1000) * p["input"] + (tokens_out / 1000) * p["output"]
     return round(cout, 4)
 
-# Interface Streamlit
 st.set_page_config(page_title="Test DISC", layout="centered")
 st.title("Test DISC – Analyse de profil comportemental")
 
@@ -33,53 +35,74 @@ st.info(f"💰 Estimation du coût API : **~${estimation}** pour ce test complet
 
 if st.button("Générer le questionnaire"):
     prompt_gen = f"""
-Tu es un expert DISC. Crée {nb_questions} questions DISC adaptées au contexte {context.lower()}, en {langue.lower()}, pour un niveau de langage {niveau.lower()}.
+Tu es un expert DISC. Génére {nb_questions} questions DISC dans le contexte {context.lower()}, en {langue.lower()}, pour un niveau {niveau.lower()}.
 
-Chaque question doit proposer 4 affirmations, correspondant chacune à un des 4 profils DISC (Dominance, Influence, Stabilité, Conformité), dans un ordre aléatoire. Évite tout biais de formulation.
+Pour chaque question, propose 4 affirmations. Chaque affirmation doit correspondre exactement à un style DISC :
+- Dominance (D)
+- Influence (I)
+- Stabilité (S)
+- Conformité (C)
 
-Format :
-Q1. Texte de la question
-- A. Réponse
-- B. Réponse
-- C. Réponse
-- D. Réponse
+Ajoute discrètement à la fin de chaque option le style entre double deux-points, exemple : "réponse ici ::D".
+
+Exemple de format :
+Q1. Texte de la question ?
+- Réponse 1 ::D
+- Réponse 2 ::I
+- Réponse 3 ::S
+- Réponse 4 ::C
+
+Fournis uniquement les questions et réponses, sans explication.
 """
     with st.spinner("Génération en cours..."):
         response = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt_gen}]
         )
-    questions_raw = response.choices[0].message.content
-    st.session_state["questions"] = questions_raw.split("\n\n")
+    questions_raw = response.choices[0].message.content.strip().split("\n\n")
+    st.session_state["questions"] = questions_raw
 
 if "questions" in st.session_state:
     st.subheader("Répondez au questionnaire")
     responses = []
+
     for i, bloc in enumerate(st.session_state["questions"]):
         lines = bloc.strip().split("\n")
         if len(lines) < 5:
             continue
-        question = lines[0]
-        options = lines[1:5]
-        random.shuffle(options)
-        answer = st.radio(question, options, key=f"q{i}")
-        responses.append(answer[0])
+        question_text = lines[0]
+        options_raw = lines[1:5]
+
+        # Extraction des types DISC
+        options_cleaned = []
+        for opt in options_raw:
+            match = re.search(r"(.*)::([DISC])", opt.strip())
+            if match:
+                label = match.group(1).strip()
+                style = match.group(2)
+                options_cleaned.append({"text": label, "style": style})
+
+        # Mélanger les options
+        random.shuffle(options_cleaned)
+        option_labels = [opt["text"] for opt in options_cleaned]
+        selection = st.radio(question_text, option_labels, key=f"q{i}")
+
+        # Retrouver le style associé
+        for opt in options_cleaned:
+            if opt["text"] == selection:
+                responses.append(opt["style"])
+                break
 
     if st.button("Analyser mes réponses"):
-        joined = ", ".join(responses)
+        counts = Counter(responses)
         prompt_eval = f"""
-Tu es un expert DISC. Analyse ces réponses : [{joined}]
-- A = Dominance
-- B = Influence
-- C = Stabilité
-- D = Conformité
+Tu es un expert DISC. Voici les réponses codées d'un utilisateur à un questionnaire DISC : {dict(counts)}
 
-Donne :
-- Nombre de réponses par style
-- Couleur dominante
-- Couleur secondaire
-- Profil synthétique (200-300 mots)
-- 3 conseils personnalisés
+1. Indique le nombre de réponses pour chaque style DISC (D, I, S, C).
+2. Déduis la couleur dominante.
+3. Donne la couleur secondaire si elle existe.
+4. Rédige un profil synthétique (200-300 mots).
+5. Fournis 3 conseils personnalisés selon ce profil.
 """
         with st.spinner("Analyse..."):
             result = client.chat.completions.create(
