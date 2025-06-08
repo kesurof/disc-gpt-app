@@ -109,6 +109,10 @@ if "questions" in st.session_state:
 
     if st.button("Analyser mes réponses"):
         counts = Counter(responses)
+        D = counts.get("D", 0)
+        I = counts.get("I", 0)
+        S = counts.get("S", 0)
+        C = counts.get("C", 0)
         prompt_eval = f'''Voici les résultats du questionnaire DISC (nombre de réponses) : D = {D}, I = {I}, S = {S}, C = {C}. Analyse ces résultats et fournis une synthèse structurée selon les consignes suivantes :
 Identifie le style dominant (celui qui a le plus grand nombre de réponses).
 Identifie un style secondaire uniquement si son nombre de réponses représente au moins 25 % du total des réponses.
