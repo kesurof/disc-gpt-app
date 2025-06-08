@@ -73,58 +73,53 @@ Cette application permet de générer un **questionnaire DISC personnalisé** et
 4. Renseigne :
    - Nom du dépôt GitHub
    - Fichier principal : `app.py`
-5. Dans **“Advanced settings”** > **“Secrets”**, ajoute :
+5. Dans **Advanced settings > Secrets**, ajoute :
 
 ```toml
 OPENAI_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxx"
 
-📁 Structure du projet
-bash
-Copier
-Modifier
+
+6. Clique sur **Deploy**.
+
+---
+
+## 📁 Structure du projet
+
 disc-gpt-app/
-├── app.py               ← Interface principale Streamlit
-├── requirements.txt     ← Dépendances Python (Streamlit + OpenAI)
-└── README.md            ← Document de présentation du projet
-❓ FAQ
-Est-ce que GPT-3.5 suffit pour ce type d’analyse ?
+├── app.py ← Interface principale Streamlit
+├── requirements.txt ← Dépendances Python (Streamlit + OpenAI)
+└── README.md ← Documentation du projet
+
+
+---
+
+## ❓ FAQ
+
+**Est-ce que GPT-3.5 suffit pour ce type d’analyse ?**  
 Oui. GPT-3.5 fournit des résultats corrects et économiques. GPT-4 est recommandé pour une synthèse plus fluide.
 
-Puis-je utiliser cette app sans carte bancaire ?
-Non. OpenAI exige une activation de facturation même pour les faibles montants (ex. : 5 $ prépayés).
+**Puis-je utiliser cette app sans carte bancaire ?**  
+Non. OpenAI exige un premier paiement ou une carte enregistrée, même pour utiliser les modèles les moins chers.
 
-Est-ce que je peux déployer l’app ailleurs ?
-Oui. Tu peux exécuter ce projet localement (streamlit run app.py) ou l’intégrer dans un conteneur Docker, sur un VPS, etc.
+**Puis-je déployer l’app ailleurs ?**  
+Oui. Elle fonctionne aussi localement (`streamlit run app.py`), sur un serveur personnel ou en conteneur Docker.
 
-Le projet stocke-t-il des données utilisateurs ?
-Non. Toutes les interactions sont jetables. Les réponses sont traitées en mémoire et transmises uniquement à l’API OpenAI.
+**Le projet stocke-t-il des données utilisateurs ?**  
+Non. Toutes les interactions sont jetables. Les données sont uniquement envoyées à l’API, puis perdues.
 
-👨‍💻 Auteur
+---
+
+## 👨‍💻 Auteur
+
 Ce projet a été conçu pour :
 
-démocratiser l’accès au modèle DISC via IA,
+- démocratiser l’accès au modèle DISC via IA,
+- automatiser les évaluations comportementales,
+- proposer une interface simple, 100% sans base de données.
 
-automatiser les évaluations comportementales,
+**Technologies utilisées** :
+- Python 3
+- Streamlit
+- OpenAI API (`gpt-3.5-turbo`, `gpt-4-turbo`)
 
-permettre un usage sans infrastructure ni base de données.
-
-Tu peux l’utiliser pour :
-
-des bilans RH internes,
-
-du coaching personnel ou d’équipe,
-
-des formations sur la connaissance de soi,
-
-des applications pédagogiques.
-
-Technologies utilisées :
-
-Python 3
-
-Streamlit
-
-OpenAI GPT (3.5 & 4-turbo)
-
-📬 Contributions
-Toute suggestion, amélioration ou bug peut être soumis via une issue ou une pull request.
+> Projet librement réutilisable à but pédagogique, RH ou personnel.
