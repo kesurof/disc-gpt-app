@@ -1,0 +1,26 @@
+<style>
+.question-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.question-text {
+  flex: 1 1 250px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+.answers {
+  flex: 2 1 300px;
+}
+
+@media (max-width: 768px) {
+  .question-block {
+    flex-direction: column;
+  }
+}
+</style>

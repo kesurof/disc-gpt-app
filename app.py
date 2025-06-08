@@ -7,7 +7,6 @@ from collections import Counter
 # Initialisation client OpenAI
 client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-# Tarifs OpenAI juin 2025
 MODELS = {
     "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
     "gpt-4o": {"input": 0.0025, "output": 0.01}
@@ -63,7 +62,9 @@ Fournis uniquement les questions et réponses, sans explication.
     st.session_state["options_melangees"] = {}
 
 if "questions" in st.session_state:
-    st.markdown("## 📝 <strong>Répondez au questionnaire</strong>", unsafe_allow_html=True)
+    st.markdown("## 📝 Répondez au questionnaire", unsafe_allow_html=True)
+    st.markdown('\n<style>\n.question-block {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: flex-start;\n  gap: 1rem;\n  margin-bottom: 1rem;\n}\n\n.question-text {\n  flex: 1 1 250px;\n  font-weight: bold;\n  font-size: 1.1rem;\n  margin-top: 0.5rem;\n}\n\n.answers {\n  flex: 2 1 300px;\n}\n\n@media (max-width: 768px) {\n  .question-block {\n    flex-direction: column;\n  }\n}\n</style>\n', unsafe_allow_html=True)
+
     if "options_melangees" not in st.session_state:
         st.session_state["options_melangees"] = {}
     responses = []
@@ -91,7 +92,7 @@ if "questions" in st.session_state:
 
         option_labels = [opt["text"] for opt in options_cleaned]
 
-        st.markdown(f"<h4 style='margin-bottom: 0.5rem;'>❓ <strong>Question {i+1} :</strong> {question_text.strip()}</h4>", unsafe_allow_html=True)
+        st.markdown(f"<div class='question-block'><div class='question-text'>Question {i+1} : {question_text.strip()}</div>", unsafe_allow_html=True)
         selection = st.radio(
             label=" ",
             options=option_labels,
@@ -99,7 +100,7 @@ if "questions" in st.session_state:
             key=f"q{i}",
             label_visibility="collapsed"
         )
-        st.markdown("---")
+        st.markdown("</div><hr>", unsafe_allow_html=True)
 
         for opt in options_cleaned:
             if opt["text"] == selection:
