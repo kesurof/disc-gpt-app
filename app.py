@@ -1,26 +1,21 @@
-
 import streamlit as st
 import openai
 import random
 import re
 from collections import Counter
 
-# Initialisation OpenAI
+# Initialisation client OpenAI
 client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-# Fonction de coût par modèle
+# Tarifs OpenAI juin 2025
+MODELS = {
+    "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
+    "gpt-4o": {"input": 0.0025, "output": 0.01}
+}
+
 def estimer_cout(model, tokens_in, tokens_out):
-    prix = {
-        "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
-        "gpt-4-turbo": {"input": 0.01, "output": 0.03},
-        "gpt-4o": {"input": 0.005, "output": 0.015},
-        "gpt-4.5-preview": {"input": 0.01, "output": 0.03}  # estimation alignée sur turbo
-    }
-    if model not in prix:
-        return None
-    p = prix[model]
-    cout = (tokens_in / 1000) * p["input"] + (tokens_out / 1000) * p["output"]
-    return round(cout, 4)
+    p = MODELS[model]
+    return round((tokens_in / 1000) * p["input"] + (tokens_out / 1000) * p["output"], 6)
 
 st.set_page_config(page_title="Test DISC", layout="centered")
 st.title("🧠 Test DISC – Analyse de profil comportemental")
@@ -29,20 +24,13 @@ context = st.selectbox("Contexte", ["Professionnel", "Personnel", "Équipe"])
 langue = st.selectbox("Langue", ["Français", "Anglais"])
 niveau = st.selectbox("Niveau de langage", ["Grand public", "Étudiant", "Manager"])
 nb_questions = st.slider("Nombre de questions", 10, 28, 12)
+model = st.selectbox("Modèle GPT utilisé", list(MODELS.keys()))
 
-model = st.selectbox("Modèle GPT utilisé", [
-    "gpt-3.5-turbo",
-    "gpt-4-turbo",
-    "gpt-4o",
-    "gpt-4.5-preview"
-])
-
-# Estimation dynamique
+# Estimation coût
 tokens_input = 1500
 tokens_output = 4000
 estimation = estimer_cout(model, tokens_input, tokens_output)
-if estimation:
-    st.info(f"💰 Estimation du coût API : **~${estimation}** pour ce test complet ({model})")
+st.info(f"💰 Estimation du coût API : ~${estimation} pour ce test complet ({model})")
 
 if st.button("Générer le questionnaire"):
     prompt_gen = f'''
@@ -70,7 +58,7 @@ Fournis uniquement les questions et réponses, sans explication.
             model=model,
             messages=[{"role": "user", "content": prompt_gen}]
         )
-    questions_raw = response.choices[0].message.content.strip().split("\\n\\n")
+    questions_raw = response.choices[0].message.content.strip().split("\n\n")
     st.session_state["questions"] = questions_raw
     st.session_state["options_melangees"] = {}
 
@@ -81,7 +69,7 @@ if "questions" in st.session_state:
     responses = []
 
     for i, bloc in enumerate(st.session_state["questions"]):
-        lines = bloc.strip().split("\\n")
+        lines = bloc.strip().split("\n")
         if len(lines) < 5:
             continue
         question_text = lines[0]
@@ -102,6 +90,7 @@ if "questions" in st.session_state:
             options_cleaned = st.session_state["options_melangees"][f"q{i}"]
 
         option_labels = [opt["text"] for opt in options_cleaned]
+
         st.markdown(f"<h4 style='margin-bottom: 0.5rem;'>❓ <strong>Question {i+1} :</strong> {question_text.strip()}</h4>", unsafe_allow_html=True)
         selection = st.radio(
             label=" ",
