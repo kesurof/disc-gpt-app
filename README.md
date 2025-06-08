@@ -77,6 +77,7 @@ Cette application permet de générer un **questionnaire DISC personnalisé** et
 
 ```toml
 OPENAI_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxx"
+```
 
 
 6. Clique sur **Deploy**.
@@ -85,11 +86,17 @@ OPENAI_API_KEY = "sk-xxxxxxxxxxxxxxxxxxxxxxxx"
 
 ## 📁 Structure du projet
 
+<details>
+<summary>📁 Structure du projet</summary>
+```
 disc-gpt-app/
 ├── app.py ← Interface principale Streamlit
 ├── requirements.txt ← Dépendances Python (Streamlit + OpenAI)
-└── README.md ← Documentation du projet
-
+├── README.md ← Documentation du projet
+└── .streamlit/
+└── config.toml ← (optionnel) Configuration visuelle Streamlit (thème, layout, etc.)
+```
+</details>
 
 ---
 
