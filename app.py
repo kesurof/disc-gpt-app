@@ -65,7 +65,7 @@ Donne :
 """
         with st.spinner("Analyse..."):
             result = client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": prompt_eval}]
             )
         st.subheader("Résultat DISC")
